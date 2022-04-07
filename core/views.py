@@ -125,6 +125,7 @@ def upload(request, jobid):
     "form": UploadJobFileForm(),
   })
 
+@login_requred
 def download(request, fileid):
   try:
     file = JobFile.objects.get(id=fileid)
@@ -135,6 +136,7 @@ def download(request, fileid):
     messages.add_message(request, messages.ERROR, f"File not found")
     return myjobs(request)
 
+@login_required
 def finish(request, jobid):
   try:
     job = Job.objects.get(id=jobid)
