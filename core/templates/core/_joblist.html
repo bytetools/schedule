@@ -1,0 +1,42 @@
+{% if jobs %}
+  <ol class="joblist">
+  {% for job in jobs %}
+    <li class="job {{ job.status }}">
+      <p>
+        Job: {{ job.job.name }}<br>
+        Due date: {{ job.job.due_date }}<br>
+        Status: {{ job.job.get_status_display }}<br>
+        {% if job.status == "due" or job.status == "late" %}
+        Note: {{ job.status | upper }}!<br>
+        {% endif %}
+        {% if job.job.assigned_to == request.user or not job.job.assigned_to %}
+        <br>
+        Files: <ul>
+          {% for file in job.job.files.all %}
+            <li><a href="{% url "download_file" file.id %}">{{ file.filename }}</a></li>
+          {% empty %}
+            <li>None</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if job.job.assigned_to and job.job.assigned_to != request.user %}
+        <br>
+        Assigned to: {{ job.job.assigned_to }}
+        {% elif job.job.assigned_to and job.job.assigned_to == request.user and job.job.status == "C" %}
+        <br>
+        <a href="{% url "upload" job.job.id %}">Upload Finished Files</a>
+        <br>
+        <a href="{% url "unclaim" job.job.id %}">Unclaim Job</a>
+        <br>
+        <a href="{% url "finish" job.job.id %}">Complete Job</a>
+        {% endif %}
+      </p>
+      {% if not job.job.assigned_to %}
+      <a href="{% url "claim" job.job.id %}">Claim</a>
+      {% endif %}
+    </li>
+  {% endfor %}
+  </ol>
+{% else %}
+  <p>No jobs available.</p>
+{% endif %}

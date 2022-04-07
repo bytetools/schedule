@@ -1,0 +1,93 @@
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #222;
+  color: #fff;
+  font-family: -apple-system, helvetica, arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, nav {
+  text-align: center;
+}
+
+nav > a {
+  padding: 12px;
+  margin: 0;
+}
+nav > a:hover {
+  background-color: black;
+  color: white;
+}
+
+#wrapper {
+  margin: auto;
+  width: 90%;
+}
+
+a {
+  color: #7ad;
+}
+
+a:visited {
+  color: #ff3492;
+}
+
+footer {
+  padding: 8px;
+}
+
+.message {
+  margin: 12px;
+  padding: 12px;
+  border-radius: 4px;
+  color: #222;
+}
+
+.message.error {
+  background-color: rgba(255, 159, 159, 0.85);
+}
+.job.late {
+  background-color: rgba(60, 0, 0, 0.85);
+}
+
+.message.success {
+  background-color: rgba(150, 255, 150, 0.85);
+}
+.job.complete {
+  background-color: rgba(0, 50, 0, 0.85);
+}
+
+.message.info {
+  background-color: rgba(130, 220, 255, 0.85);
+}
+
+.message.warning {
+  background-color: rgba(255, 255, 175, 0.85);
+}
+/* <= 24 hr before due date */
+.job.due {
+  background-color: rgba(50, 35, 0, 0.85);
+}
+
+.joblist {
+  list-style-type: none; 
+  margin: 0;
+  padding: 0;
+}
+
+.joblist > li {
+  border: 2px solid white;
+  border-radius: 12px;
+  margin: 12px;
+  padding: 12px;
+}
+
+@media screen and (max-width: 600px) {
+  nav {
+    text-align: left;
+    width: 100%;
+  }
+  nav a {
+    display: block;
+  }
+}

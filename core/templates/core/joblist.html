@@ -1,0 +1,13 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<p>The jobs listed below are listed in order of the cloest due date.</p>
+
+<h2>{{ header }}</h2>
+
+{{ jobs }}
+
+<h2>{{ done_header }}</h2>
+
+{{ done_jobs }}
+{% endblock %}
