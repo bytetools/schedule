@@ -1,7 +1,12 @@
-from .models import Institution, Job, JobFile, Tag
+from .models import Institution, Job, JobFile, Tag, ScheduleUser
 from django.contrib import admin
 
 # Register your models here.
+@admin.register(ScheduleUser)
+class ScheduleUserAdmin(admin.ModelAdmin):
+  list_display = ["username", "email"]
+  search_fields = ["username", "email"]
+
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin):
   list_display = ["name", "due_date"]
