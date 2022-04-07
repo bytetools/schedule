@@ -1,8 +1,10 @@
 from .models import Institution, Job, JobFile, Tag, ScheduleUser
 from django.contrib import admin
+from django.contrib.auth.models import Permission
+from django.contrib.auth import get_user_model
 
 # Register your models here.
-@admin.register(ScheduleUser)
+@admin.register(get_user_model())
 class ScheduleUserAdmin(admin.ModelAdmin):
   list_display = ["username", "email"]
   search_fields = ["username", "email"]
