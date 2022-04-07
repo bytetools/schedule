@@ -125,7 +125,7 @@ def upload(request, jobid):
     "form": UploadJobFileForm(),
   })
 
-@login_requred
+@login_required
 def download(request, fileid):
   try:
     file = JobFile.objects.get(id=fileid)
