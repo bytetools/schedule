@@ -47,8 +47,11 @@ def claim(request, jobid):
       messages.add_message(request, messages.ERROR, f"You cannot claim more than 3 jobs at a time.")
       return jobs(request)
     if not job.assigned_to:
-      job.assigned_to = request.user
-      job.status = "C" # claimed 
+      if job.status == "D":
+        messages.add_message(request, messages.INFO, f"This job is already complete. You cannot claim it.")
+      else:
+        job.assigned_to = request.user
+        job.status = "C" # claimed 
     else:
       messages.add_message(request, messages.INFO, f"This job is already assigned!")
       return jobs(request)
@@ -140,12 +143,15 @@ def download(request, fileid):
 def finish(request, jobid):
   try:
     job = Job.objects.get(id=jobid)
-    job.status = "P" # pending review/edits
-    try:
-      job.save()
-      messages.add_message(request, messages.SUCCESS, f"Job is now pending approval.")
-    except:
-      messages.add_message(request, messages.ERROR, f"Could not save status.")
+    if job.status == "C": # claimed
+      job.status = "P" # pending review/edits
+      try:
+        job.save()
+        messages.add_message(request, messages.SUCCESS, f"Job is now pending approval.")
+      except:
+        messages.add_message(request, messages.ERROR, f"Could not save status.")
+    else:
+      messages.add_message(request, message.ERROR, f"You cannot finish a job which is either complete, or unclaimed.")
   except:
     messages.add_message(request, messages.ERROR, f"Job not found")
   return myjobs(request)
