@@ -102,7 +102,7 @@ def jobs(request):
     Job.objects.exclude(status="D").order_by("due_date"),
     Job.objects.filter(status="D").order_by("due_date"), # D = done
     "Job List",
-    "Done Job List",
+    "Completed Jobs",
   )
 
 @login_required
@@ -112,7 +112,7 @@ def myjobs(request):
     Job.objects.exclude(status="D").filter(assigned_to=request.user).order_by("due_date"),
     Job.objects.filter(assigned_to=request.user, status="D").order_by("due_date"),
     "My Jobs",
-    "My Done Jobs",
+    "Job History",
   )
 
 @login_required
