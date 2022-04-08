@@ -1,8 +1,9 @@
+from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
 class ScheduleUser(AbstractUser):
-  pass
+  phone = PhoneNumberField(blank=True, null=True)
 
 # Create your models here.
 class Institution(models.Model):
