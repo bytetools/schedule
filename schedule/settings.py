@@ -135,3 +135,6 @@ AUTH_USER_MODEL = "core.ScheduleUser"
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'sent_emails'
 DEFAULT_FROM_EMAIL = 'Bytetools Jobs <jobs@bytetools.ca>'
+
+PHONENUMBER_DEFAULT_FORMAT = "NATIONAL"
+PHONENUMBER_DEFAULT_REGION = "CA"
