@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h2>Profile</h2>
+
+<h3>Actions</h3>
+
+<ul>
+  <li><a href="{% url "password_change" %}">Change Password</a></li>
+  <li><a href="{% url "edit_profile" %}">Edit User Info</a></li>
+</ul>
+{% endblock %}
