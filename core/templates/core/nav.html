@@ -1,16 +1,24 @@
+{% load has_group %}
 <nav>
   <a href="{% url "home" %}">Home</a>
-  {% if request.user.is_authenticated %}
-    <a href="{% url "logout" %}">Logout</a>
+  {% if request.user|has_group:"transcriber" %}
     <a href="{% url "joblist" %}">Job List</a>
     <a href="{% url "myjobs" %}">My Jobs</a>
+  {% endif %}
+  {% if request.user|has_group:"client" %}
+    <a href="{% url "newjob" %}">Add Job</a>
+  {% endif %}
+  {% if request.user|has_group:"recipient" %}
+    <a href="{% url "rec_jobs" %}">Files</a>
+  {% endif %}
+  {% if request.user.is_authenticated %}
     <a href="{% url "profile" %}">Profile</a>
+    <a href="{% url "logout" %}">Logout</a>
   {% else %}
     <a href="{% url "login" %}">Login</a>
     <a href="{% url "password_reset" %}">Reset Password</a>
   {% endif %}
   {% if request.user.is_superuser %}
-    <a href="{% url "newjob" %}">Add Job</a>
-    <a href="/admin/">Admin</a>
+    <a class="admin-link" href="/admin/">Admin</a>
   {% endif %}
 </nav>

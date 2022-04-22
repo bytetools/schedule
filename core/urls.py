@@ -11,5 +11,8 @@ urlpatterns = [
   path("jobs/unclaim/<jobid>/", views.unclaim, name="unclaim"),
   path("jobs/finish/<jobid>/", views.finish, name="finish"),
   path("jobs/downloads/<fileid>/", views.download, name="download_file"),
+  path("jobs/edit/<jobid>/", views.edit, name="edit"),
+  path("jobs/complete/<jobid>/", views.complete, name="complete"),
+  path("jobs/recieved/", views.received, name="rec_jobs"),
   path("", include("django.contrib.auth.urls")),
 ]

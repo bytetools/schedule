@@ -1,4 +1,4 @@
-from .models import Institution, Job, JobFile, Tag, ScheduleUser
+from .models import Institution, Job, JobFile, Tag, ScheduleUser, NotificationType
 from django.contrib import admin
 from django.contrib.auth.models import Permission
 from django.contrib.auth import get_user_model
@@ -28,3 +28,8 @@ class InstitutionAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
   list_display = ["name"]
   search_fields = ["name"]
+
+@admin.register(NotificationType)
+class NotificationAdmin(admin.ModelAdmin):
+  list_display = ["name", "__str__"]
+  search_fields = ["name", "__str__"]

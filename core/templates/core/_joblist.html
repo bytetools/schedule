@@ -1,3 +1,4 @@
+{% load has_group %}
 {% if jobs %}
   <ol class="joblist">
   {% for job in jobs %}
@@ -24,14 +25,22 @@
         Assigned to: {{ job.job.assigned_to }}
         {% elif job.job.assigned_to and job.job.assigned_to == request.user and job.job.status == "C" %}
         <br>
-        <a href="{% url "upload" job.job.id %}">Upload Finished Files</a>
+        <a href="{% url "upload" job.job.id %}">Upload Files</a>
         <br>
         <a href="{% url "unclaim" job.job.id %}">Unclaim Job</a>
         <br>
         <a href="{% url "finish" job.job.id %}">Complete Job</a>
         {% endif %}
+        {% if request.user|has_group:"admin" %}
+        <br>
+        <a href="{% url "edit" job.job.id %}">Edit Job (Admin)</a>
+        <br>
+        <a href="{% url "upload" job.job.id %}">Add Files (Admin)</a>
+        <br>
+        <a href="{% url "complete" job.job.id %}">Complete Job (Admin)</a>
+        {% endif %}
       </p>
-      {% if not job.job.assigned_to %}
+      {% if not job.job.assigned_to and request.user|has_group:"transcriber" %}
       <a href="{% url "claim" job.job.id %}">Claim</a>
       {% endif %}
     </li>
