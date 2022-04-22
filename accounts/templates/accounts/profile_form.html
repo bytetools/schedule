@@ -1,0 +1,10 @@
+{% load has_group %}
+
+{% for field in form %}
+  {{ field.errors }}
+  {{ field.label_tag }} {{ field }}
+  <p>Hi!</p>
+  {% if field.help_text %}
+    <p class="help">{{ field.help_text|safe }}</p>
+  {% endif %}
+{% endfor %}
