@@ -136,5 +136,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'sent_emails'
 DEFAULT_FROM_EMAIL = 'Bytetools Jobs <jobs@bytetools.ca>'
 
+# this allows direct access to the number for twilio
+PHONENUMBER_DB_FORMAT = "E164"
 PHONENUMBER_DEFAULT_FORMAT = "NATIONAL"
 PHONENUMBER_DEFAULT_REGION = "CA"
+
+# used for text messages
+BASE_URL = "https://jobs.bytetools.ca"
