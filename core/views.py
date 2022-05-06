@@ -322,7 +322,7 @@ def complete(request, jobid):
 def received(request):
   return _jobs(
     request,
-    Job.objects.filter(recipient=request.user, status="D").order_by("due_date"),
+    Job.objects.filter(recipient=request.user, status="D").order_by("-due_date"),
     Job.objects.exclude(status="D").filter(recipient=request.user).order_by("due_date"),
     "Completed Work",
     "In Progress",
