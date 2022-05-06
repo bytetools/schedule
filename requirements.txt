@@ -5,4 +5,4 @@ twilio
 # for Docker/deployment
 mysqlclient
 uwsgi
-
+python-dotenv
