@@ -82,6 +82,13 @@ footer {
   padding: 12px;
 }
 
+.job-grid label::after {
+  content: ": ";
+}
+.job-grid div {
+  display: inline-block;
+}
+
 input:disabled {
   color: white;
   border: none;

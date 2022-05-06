@@ -2,16 +2,18 @@
 {% if jobs %}
   <ol class="joblist">
   {% for job in jobs %}
-    <li class="job {{ job.status }}">
-      <p>
-        Job: {{ job.job.name }}<br>
-        Due date: {{ job.job.due_date }}<br>
-        Status: {{ job.job.get_status_display }}<br>
-        {% if job.status == "due" or job.status == "late" %}
-        Note: {{ job.status | upper }}!<br>
-        {% endif %}
-        {% if job.job.assigned_to == request.user or not job.job.assigned_to or job.job.recipient == request.user %}
-        <br>
+    <li class="job {{ job.status }} job-grid">
+      <label for="job-name-{{ job.job.id }}">Name</label>
+      <div id="job-name-{{ job.job.id }}">{{ job.job.name }}</div><br>
+      <label for="job-due-date-{{ job.job.id }}">Due date</label>
+      <div id="job-due-date-{{ job.job.id }}">{{ job.job.due_date }}</div><br>
+      <label for="job-status-{{ job.job.id }}">Status</label>
+      <div id="job-status-{{ job.job.id }}">{{ job.job.get_status_display }}</div><br>
+      {% if job.status == "due" or job.status == "late" %}
+      <label for="job-note-{{ job.job.id }}">Note</label>
+      <div id="job-note-{{ job.job.id }}">{{ job.status|upper }}</div><br>
+      {% endif %}
+      {% if job.job.assigned_to == request.user or job.job.recipient == request.user or not job.job.assigned_to %}
         Files: <ul>
           {% for file in job.job.files.all %}
             <li><a href="{% url "download_file" file.id %}">{{ file.filename }}</a></li>
@@ -19,12 +21,13 @@
             <li>None</li>
           {% endfor %}
         </ul>
-        {% endif %}
-        {% if job.job.assigned_to and job.job.assigned_to != request.user %}
         <br>
-        Assigned to: {{ job.job.assigned_to }}
-        {% elif job.job.assigned_to and job.job.assigned_to == request.user and job.job.status == "C" %}
-        <br>
+      {% endif %}
+      {% if request.user|has_group:"transcriber" or request.user|has_group:"admin" %}
+        <label for="job-assigned-to-{{ job.job.id }}">Assigned to</label>
+        <div id="job-assigned-to-{{ job.job.id }}">{{ job.job.assigned_to }}</div><br>
+      {% endif %}
+        {% if job.job.assigned_to and job.job.assigned_to == request.user and job.job.status == "C" %}
         <a href="{% url "upload" job.job.id %}">Upload Files</a>
         <br>
         <a href="{% url "unclaim" job.job.id %}">Unclaim Job</a>
@@ -41,6 +44,7 @@
         {% endif %}
       </p>
       {% if not job.job.assigned_to and request.user|has_group:"transcriber" %}
+      <br>
       <a href="{% url "claim" job.job.id %}">Claim</a>
       {% endif %}
     </li>
