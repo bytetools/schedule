@@ -14,13 +14,17 @@ class UserForm(forms.ModelForm):
     labels = {
       "new_job_notifications": "Get text message when new jobs are posted (only for transcribers)",
       "job_pending_edits_notifications": "Get text messages when a job is pending approval (only for reviewers)",
-      "job_completed_notifications": "Get text messages when a job is completed (only for clients, recievers)",
+      "job_completed_notifications": "Get text messages when a job is completed (only for clients, recipients)",
     }
 
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
     groups = [x["name"] for x in self.instance.groups.values()] # ("id": 1, "name": "transcriber"} -> "transcriber"
+    print(groups)
     if not "transcriber" in groups:
-      self.fields["new_job_txt_notifications"].widget.attrs["disabled"] = True
-    if not ("recipient" in groups or "client" in groups):
-      self.fields["job_completed_txt_notifications"].widget.attrs["disabled"] = True
+      self.fields["new_job_notifications"].widget.attrs["disabled"] = True
+    if not "reviewer" in groups:
+      self.fields["job_pending_edits_notifications"].widget.attrs["disabled"] = True
+    if not "recipient" in groups:
+      self.fields["job_completed_notifications"].widget.attrs["disabled"] = True
+

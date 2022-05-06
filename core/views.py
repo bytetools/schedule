@@ -15,6 +15,7 @@ from schedule import settings
 from .models import Job, JobFile, ScheduleUser
 from .forms import NewJobForm, UploadJobFileForm, JobForm
 from .utils import notify_users_txt
+from .checks import groups_required, transcriber_required, admin_required, recipient_required
 
 TZ = ZoneInfo(settings.TIME_ZONE)
 
@@ -57,7 +58,7 @@ def _job_due_date(dt):
   job_due_date_day_ordinal = _make_ordinal(dt.day)
   return dt.strftime(f"%A, %B {job_due_date_day_ordinal} %Y")
 
-@login_required
+@admin_required()
 def new_job(request):
   form = NewJobForm()
   if request.method == "POST":
@@ -96,7 +97,7 @@ def new_job(request):
     _txt_helper(request, f"New job added on https://jobs.bytetools.ca/ named \"{job_name}\" and is due on {job_due_date}. Log in or go to the following URL to claim this job: {claim_job_url}", users=[u for u in ScheduleUser.objects.filter(groups__name="transcriber", new_job_notifications__name="T")]) # T = text
   return _njob(request, form)
 
-@login_required
+@transcriber_required()
 def unclaim(request, jobid):
   try:
     job = Job.objects.get(id=jobid)
@@ -111,7 +112,7 @@ def unclaim(request, jobid):
     messages.add_message(request, messages.ERROR, f"Job not found")
   return myjobs(request)
 
-@login_required
+@transcriber_required()
 def claim(request, jobid):
   job = None
   try:
@@ -175,7 +176,7 @@ def _jobs(request, jobs, done_jobs, header, done_header):
     "noteworthy": ["late", "due"],
   })
 
-@login_required
+@transcriber_required()
 def jobs(request):
   uuids = [job.id for job in Job.objects.all()]
   return _jobs(
@@ -186,7 +187,7 @@ def jobs(request):
     "Completed Jobs",
   )
 
-@login_required
+@transcriber_required()
 def myjobs(request):
   return _jobs(
     request,
@@ -196,7 +197,7 @@ def myjobs(request):
     "Job History",
   )
 
-@login_required
+@transcriber_required()
 def upload(request, jobid):
 
   form = UploadJobFileForm()
@@ -235,7 +236,7 @@ def upload(request, jobid):
     "form": form,
   })
 
-@login_required
+@groups_required("transcriber", "receiver")
 def download(request, fileid):
   try:
     file = JobFile.objects.get(id=fileid)
@@ -246,7 +247,7 @@ def download(request, fileid):
     messages.add_message(request, messages.ERROR, f"File not found")
     return myjobs(request)
 
-@login_required
+@transcriber_required()
 def finish(request, jobid):
   job = None
   try:
@@ -269,7 +270,7 @@ def finish(request, jobid):
   _txt_helper(request, f"The job \"{job.name}\" is pending approval. Please login and review it before the due date, on {job_due_date}.", users=[u for u in ScheduleUser.objects.filter(groups__name="reviewer", job_pending_edits_notifications__name="T")]) # T = text
   return myjobs(request)
 
-@login_required
+@transcriber_required()
 def edit(request, jobid):
   job = None
   form = None
@@ -290,7 +291,7 @@ def edit(request, jobid):
     "form": form
   })
 
-@login_required
+@groups_required("reviewer")
 def complete(request, jobid):
   job = None
   try:
@@ -318,7 +319,7 @@ def complete(request, jobid):
   return myjobs(request)
 
 # for receiving users
-@login_required
+@recipient_required()
 def received(request):
   return _jobs(
     request,

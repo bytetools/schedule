@@ -3,9 +3,7 @@
 {% block content %}
 <p>The internal job claim and submission tool for Bytetools Technologies.
 
-{% if request.user.is_authenticated %}
-Check the <a href="{% url "joblist" %}">job list</a> to claim a new job.
-{% else %}
+{% if not request.user.is_authenticated %}
 Please <a href="{% url "login" %}">Login</a> to continue.
 {% endif %}
 
