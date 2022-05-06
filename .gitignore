@@ -2,3 +2,4 @@ __pycache__/
 /env/
 *.pyc
 /send_emails/
+.env
