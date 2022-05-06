@@ -10,7 +10,7 @@
         {% if job.status == "due" or job.status == "late" %}
         Note: {{ job.status | upper }}!<br>
         {% endif %}
-        {% if job.job.assigned_to == request.user or not job.job.assigned_to %}
+        {% if job.job.assigned_to == request.user or not job.job.assigned_to or job.job.recipient == request.user %}
         <br>
         Files: <ul>
           {% for file in job.job.files.all %}
