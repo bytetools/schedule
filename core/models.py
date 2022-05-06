@@ -26,13 +26,10 @@ class ScheduleUser(AbstractUser):
   phone = PhoneNumberField(blank=True, null=True)
 # only for transcribers
   new_job_notifications = models.ManyToManyField(NotificationType, default=[], blank=True, related_name="new_job_users")
-  new_job_txt_notifications = models.BooleanField(default=False, blank=False, null=False)
 # only for admins
   job_pending_edits_notifications = models.ManyToManyField(NotificationType, default=[], blank=True, related_name="review_users")
-  job_pending_edits_txt_notifications = models.BooleanField(default=False, blank=False, null=False)
 # only for recipients
   job_completed_notifications = models.ManyToManyField(NotificationType, default=[], blank=True, related_name="completed_users")
-  job_completed_txt_notifications = models.BooleanField(default=False, blank=False, null=False)
 
 # Create your models here.
 class Institution(models.Model):
