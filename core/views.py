@@ -269,6 +269,7 @@ def finish(request, jobid):
   _txt_helper(request, f"The job \"{job.name}\" is pending approval. Please login and review it before the due date, on {job_due_date}.", users=[u for u in ScheduleUser.objects.filter(groups__name="reviewer", job_pending_edits_notifications__name="T")]) # T = text
   return myjobs(request)
 
+@login_required
 def edit(request, jobid):
   job = None
   form = None
@@ -289,6 +290,7 @@ def edit(request, jobid):
     "form": form
   })
 
+@login_required
 def complete(request, jobid):
   job = None
   try:
@@ -316,6 +318,7 @@ def complete(request, jobid):
   return myjobs(request)
 
 # for receiving users
+@login_required
 def received(request):
   return _jobs(
     request,
