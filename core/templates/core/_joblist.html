@@ -13,7 +13,7 @@
       <label for="job-note-{{ job.job.id }}">Note</label>
       <div id="job-note-{{ job.job.id }}">{{ job.status|upper }}</div><br>
       {% endif %}
-      {% if job.job.assigned_to == request.user or job.job.recipient == request.user or not job.job.assigned_to %}
+      {% if job.job.assigned_to == request.user or job.job.recipient == request.user or not job.job.assigned_to or request.user|has_group:"admin" or request.user|has_group:"reviewer" %}
         Files: <ul>
           {% for file in job.job.files.all %}
             <li><a href="{% url "download_file" file.id %}">{{ file.filename }}</a></li>
