@@ -121,7 +121,7 @@ def claim(request, jobid):
     messages.add_message(request, messages.ERROR, f"Job not found.")
     return myjobs(request)
   
-  if len(request.user.transcriber_jobs.filter(status=["P", "C"])) >= 3:
+  if len(request.user.transcriber_jobs.filter(status=["C"])) >= 3:
     messages.add_message(request, messages.ERROR, f"You cannot claim more than 3 jobs at a time.")
     return jobs(request)
   if not job.assigned_to:
