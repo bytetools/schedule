@@ -182,7 +182,7 @@ def jobs(request):
   return _jobs(
     request,
     Job.objects.exclude(status="D").order_by("due_date"),
-    Job.objects.filter(status="D").order_by("due_date"), # D = done
+    Job.objects.filter(status="D").order_by("-due_date"), # D = done
     "Job List",
     "Completed Jobs",
   )
