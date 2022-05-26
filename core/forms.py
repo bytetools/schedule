@@ -7,6 +7,7 @@ class NewJobForm(forms.Form):
   name = forms.CharField()
   due_date = forms.DateField(widget=widgets.SelectDateWidget())
   files = forms.FileField(widget=forms.ClearableFileInput(attrs={"multiple": True}))
+  notify_transcribers = forms.BooleanField(required=False)
 
 class UploadJobFileForm(forms.Form):
   name = forms.CharField(required=False, widget=forms.TextInput(attrs={"disabled": True}))

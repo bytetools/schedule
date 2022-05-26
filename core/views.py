@@ -90,11 +90,14 @@ def new_job(request):
     except Exception as e:
       messages.add_message(request, messages.ERROR, "Error saving uploaded files. Perhaps they are too big?")
     messages.add_message(request, messages.SUCCESS, "New job added.")
-    job_name = form.cleaned_data["name"]
-    job_due_dt = datetime.combine(form.cleaned_data["due_date"], datetime.min.time())
-    job_due_date = _job_due_date(job_due_dt)
-    claim_job_url = settings.BASE_URL + reverse_lazy("claim", kwargs={"jobid": job.id})
-    _txt_helper(request, f"New job added on https://jobs.bytetools.ca/ named \"{job_name}\" and is due on {job_due_date}. Log in or go to the following URL to claim this job: {claim_job_url}", users=[u for u in ScheduleUser.objects.filter(groups__name="transcriber", new_job_notifications__name="T")]) # T = text
+    if form.cleaned_data["notify_transcribers"]:
+      job_name = form.cleaned_data["name"]
+      job_due_dt = datetime.combine(form.cleaned_data["due_date"], datetime.min.time())
+      job_due_date = _job_due_date(job_due_dt)
+      claim_job_url = settings.BASE_URL + reverse_lazy("claim", kwargs={"jobid": job.id})
+      _txt_helper(request, f"New job added on https://jobs.bytetools.ca/ named \"{job_name}\" and is due on {job_due_date}. Log in or go to the following URL to claim this job: {claim_job_url}", users=[u for u in ScheduleUser.objects.filter(groups__name="transcriber", new_job_notifications__name="T")]) # T = text
+    else:
+      messages.add_message(request, messages.WARNING, "A notification was NOT sent to transcribers.")
   return _njob(request, form)
 
 @transcriber_required()
