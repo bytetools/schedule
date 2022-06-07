@@ -9,11 +9,19 @@
       <div id="job-due-date-{{ job.job.id }}">{{ job.job.due_date }}</div><br>
       <label for="job-status-{{ job.job.id }}">Status</label>
       <div id="job-status-{{ job.job.id }}">{{ job.job.get_status_display }}</div><br>
+      {% if request.user|has_group:"transcriber" or request.user|has_group:"admin" or request.user|has_group:"reviewer" %}
+        <label for="job-assigned-to-{{ job.job.id }}">Assigned to</label>
+        <div id="job-assigned-to-{{ job.job.id }}">{{ job.job.assigned_to }}</div><br>
+				{% if job.job.reviewer %}
+					<label for="job-reviewed-of-{{ job.job.id }}">Reviewer</label>
+					<div if="job-reviewer-of-{{ job.job.id }}">{{ job.job.reviewer }}</div><br>
+				{% endif %}
+      {% endif %}
       {% if job.status == "due" or job.status == "late" %}
       <label for="job-note-{{ job.job.id }}">Note</label>
       <div id="job-note-{{ job.job.id }}">{{ job.status|upper }}</div><br>
       {% endif %}
-      {% if job.job.assigned_to == request.user or job.job.recipient == request.user or not job.job.assigned_to or request.user|has_group:"admin" or request.user|has_group:"reviewer" or job.job.status == "D" %}
+      {% if job.job.assigned_to == request.user or job.job.recipient == request.user or not job.job.assigned_to or request.user|has_group:"admin" or job.job.reviewer == request.user or job.job.status == "D" %}
         Files: <ul>
           {% for file in job.job.files.all %}
             <li><a href="{% url "download_file" file.id %}">{{ file.filename }}</a></li>
@@ -23,10 +31,6 @@
         </ul>
         <br>
       {% endif %}
-      {% if request.user|has_group:"transcriber" or request.user|has_group:"admin" %}
-        <label for="job-assigned-to-{{ job.job.id }}">Assigned to</label>
-        <div id="job-assigned-to-{{ job.job.id }}">{{ job.job.assigned_to }}</div><br>
-      {% endif %}
         {% if job.job.assigned_to and job.job.assigned_to == request.user and job.job.status == "C" %}
         <a href="{% url "upload" job.job.id %}">Upload Files</a>
         <br>
@@ -34,9 +38,13 @@
         <br>
         <a href="{% url "finish" job.job.id %}">Complete Job</a>
         {% endif %}
-				{% if request.user|has_group:"reviewer" and not request.user|has_group:"admin" %}
+				{% if request.user|has_group:"reviewer" and job.job.status == "P" and not job.job.reviewer == request.user %}
+					<br>
+					<a href="{% url "review" job.job.id %}">Review Job</a>
+				{% endif %}
+				{% if job.job.reviewer == request.user and request.user|has_group:"reviewer" and not request.user|has_group:"admin" %}
 				<br>
-				<a href="{% url "upload" job.job.id %}">Add Files</a>
+				<a href="{% url "upload" job.job.id %}">Upload Files</a>
 				<br>
 				<a href="{% url "complete" job.job.id %}">Finish Review</a>
 				{% endif %}
