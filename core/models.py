@@ -57,6 +57,7 @@ class Job(models.Model):
   )
   #institution = models.ForeignKey(Institution, on_delete=models.PROTECT, related_name="jobs", null=False, blank=False)
   submitter = models.ForeignKey(ScheduleUser, on_delete=models.PROTECT, related_name="submitted_jobs", null=True, blank=False)
+  reviewer = models.ForeignKey(ScheduleUser, on_delete=models.PROTECT, related_name="reviewed_jobs", null=True, blank=False)
   recipient = models.ForeignKey(ScheduleUser, on_delete=models.PROTECT, related_name="recieving_jobs", null=True, blank=False)
 # the time when this file must be completed by: this includes time so that a student can receive it the morning of if necessary
   due_date = models.DateTimeField(null=False, blank=False)
