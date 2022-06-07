@@ -3,6 +3,7 @@ import traceback
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -14,7 +15,7 @@ from schedule import settings
 
 from .models import Job, JobFile, ScheduleUser
 from .forms import NewJobForm, UploadJobFileForm, JobForm
-from .utils import notify_users_txt
+from .utils import notify_users_txt, discord_new_job, discord_review_job
 from .checks import groups_required, transcriber_required, admin_required, recipient_required
 
 TZ = ZoneInfo(settings.TIME_ZONE)
@@ -92,9 +93,9 @@ def new_job(request):
     messages.add_message(request, messages.SUCCESS, "New job added.")
     if form.cleaned_data["notify_transcribers"]:
       job_name = form.cleaned_data["name"]
-      job_due_dt = datetime.combine(form.cleaned_data["due_date"], datetime.min.time())
-      job_due_date = _job_due_date(job_due_dt)
+      job_due_date = _job_due_date(job.due_date)
       claim_job_url = settings.BASE_URL + reverse_lazy("claim", kwargs={"jobid": job.id})
+      discord_new_job(job)
       _txt_helper(request, f"New job added on https://jobs.bytetools.ca/ named \"{job_name}\" and is due on {job_due_date}. Log in or go to the following URL to claim this job: {claim_job_url}", users=[u for u in ScheduleUser.objects.filter(groups__name="transcriber", new_job_notifications__name="T")]) # T = text
     else:
       messages.add_message(request, messages.WARNING, "A notification was NOT sent to transcribers.")
@@ -194,7 +195,7 @@ def jobs(request):
 def myjobs(request):
   return _jobs(
     request,
-    Job.objects.exclude(status="D").filter(assigned_to=request.user).order_by("due_date"),
+    Job.objects.exclude(status="D").filter(Q(assigned_to=request.user) | Q(reviewer=request.user)).order_by("due_date"),
     Job.objects.filter(assigned_to=request.user, status="D").order_by("due_date"),
     "My Jobs",
     "Job History",
@@ -270,6 +271,7 @@ def finish(request, jobid):
     messages.add_message(request, messages.ERROR, f"Could not save status.")
     return myjobs(request)
   job_due_date = _job_due_date(job.due_date)
+  discord_review_job(job)
   _txt_helper(request, f"The job \"{job.name}\" is pending approval. Please login and review it before the due date, on {job_due_date}.", users=[u for u in ScheduleUser.objects.filter(groups__name="reviewer", job_pending_edits_notifications__name="T")]) # T = text
   return myjobs(request)
 
@@ -319,6 +321,27 @@ def complete(request, jobid):
     if "T" in job_completed_notification_types: # T = text
       rec_url = settings.BASE_URL + reverse_lazy("rec_jobs")
       _txt_helper(request, f"Job \"{job.name}\" is complete. Login, or go to this URL to see your documents: {rec_url}", users=[job.recipient])
+  return myjobs(request)
+
+@groups_required("reviewer")
+def review(request, jobid):
+  job = None
+  try:
+    job = Job.objects.get(id=jobid)
+  except:
+    messages.add_message(request, messages.ERROR, f"Job does not exist.")
+    return myjobs(request)
+
+  if job.reviewer:
+    messages.add_message(request, messages.ERROR, f"Job is already being reviewed.")
+    return myjobs(request)
+  
+  try:
+    job.reviewer = request.user
+    job.save()
+    messages.add_message(request, messages.SUCCESS, "You can now review documents from the job.")
+  except:
+    nessages.add_message(request, messages.ERROR, f"Could now save new job info.")
   return myjobs(request)
 
 # for receiving users

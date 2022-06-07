@@ -14,5 +14,6 @@ urlpatterns = [
   path("jobs/edit/<jobid>/", views.edit, name="edit"),
   path("jobs/complete/<jobid>/", views.complete, name="complete"),
   path("jobs/recieved/", views.received, name="rec_jobs"),
+  path("jobs/review/<jobid>/", views.review, name="review"),
   path("", include("django.contrib.auth.urls")),
 ]
