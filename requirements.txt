@@ -2,6 +2,7 @@ Django==4.0.3
 django-phonenumber-field
 phonenumbers
 twilio
+discord-webhooks
 # for Docker/deployment
 mysqlclient
 python-dotenv
