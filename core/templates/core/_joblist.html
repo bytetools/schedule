@@ -34,6 +34,12 @@
         <br>
         <a href="{% url "finish" job.job.id %}">Complete Job</a>
         {% endif %}
+				{% if request.user|has_group:"reviewer" and not request.user|has_group:"admin" %}
+				<br>
+				<a href="{% url "upload" job.job.id %}">Add Files</a>
+				<br>
+				<a href="{% url "complete" job.job.id %}">Finish Review</a>
+				{% endif %}
         {% if request.user|has_group:"admin" %}
         <br>
         <a href="{% url "edit" job.job.id %}">Edit Job (Admin)</a>
