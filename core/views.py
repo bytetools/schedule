@@ -200,9 +200,8 @@ def myjobs(request):
     "Job History",
   )
 
-@transcriber_required()
+@groups_required("transcriber", "reviewer")
 def upload(request, jobid):
-
   form = UploadJobFileForm()
   job = None
   try:
@@ -211,8 +210,9 @@ def upload(request, jobid):
   except Exception as e:
     messages.add_message(request, messages.ERROR, "Job not found")
     return redirect(reverse_lazy("myjobs"))
-  if request.user != job.assigned_to or not request.user.groups.filter(name="admin").exists():
+  if request.user != job.assigned_to and not request.user.groups.filter(name__in=["admin", "reviewer"]).exists():
     messages.add_message(request, messages.ERROR, "You are not the owner of this document.")
+    return myjobs(request)
 
   if request.method == "POST":
     form = UploadJobFileForm(request.POST, request.FILES, initial={"name": job.name})
