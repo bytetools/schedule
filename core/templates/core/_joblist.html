@@ -5,6 +5,8 @@
     <li class="job {{ job.status }} job-grid">
       <label for="job-name-{{ job.job.id }}">Name</label>
       <div id="job-name-{{ job.job.id }}">{{ job.job.name }}</div><br>
+      <label for="job-id-{{ job.job.id }}">ID</label>
+      <div id="job-id-{{ job.job.id }}">#{{ job.job.id }}</div><br>
       <label for="job-due-date-{{ job.job.id }}">Due date</label>
       <div id="job-due-date-{{ job.job.id }}">{{ job.job.due_date }}</div><br>
       <label for="job-status-{{ job.job.id }}">Status</label>
