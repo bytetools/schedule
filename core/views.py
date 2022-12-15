@@ -59,7 +59,7 @@ def _job_due_date(dt):
   job_due_date_day_ordinal = _make_ordinal(dt.day)
   return dt.strftime(f"%A, %B {job_due_date_day_ordinal} %Y")
 
-@admin_required()
+@groups_required("admin", "client")
 def new_job(request):
   form = NewJobForm()
   if request.method == "POST":
